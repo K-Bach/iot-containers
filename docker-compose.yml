@@ -1,0 +1,28 @@
+services:
+  camera:
+    build:
+      context: ./camera   # Path to the Dockerfile for camera
+    networks:
+      - shared_network
+    ports:
+      - "7001:7001"
+
+  monitor:
+    build:
+      context: ./monitor   # Path to the Dockerfile for monitor
+    networks:
+      - shared_network
+    ports:
+      - "7002:7002"
+
+  door:
+    build:
+      context: ./door   # Path to the Dockerfile for door
+    networks:
+      - shared_network
+    ports:
+      - "7003:7003"
+
+networks:
+  shared_network:
+    driver: bridge

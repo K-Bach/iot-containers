@@ -19,11 +19,11 @@ def checkImage(data, hash):
 
     if not is_family_member:
         # If not family member, notify and lock the door
-        r = requests.get("http://door_container:7003/controlDoor/0")
+        r = requests.get("http://door:7003/controlDoor/0")
         return notify(data) + " " + r.text
     else:
         # If family member detected, unlock the door
-        r = requests.get("http://door_container:7003/controlDoor/1")
+        r = requests.get("http://door:7003/controlDoor/1")
         response = r.text
         
         return "Family member recognized. " + response

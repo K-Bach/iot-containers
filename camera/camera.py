@@ -17,7 +17,7 @@ def mock_motion():
         hash_object = hashlib.sha384(val.encode())
         hex_digest = hash_object.hexdigest()
         
-        r = requests.get("http://monitor_container:7002/checkImage/" + val + "/" + hex_digest)
+        r = requests.get("http://monitor:7002/checkImage/" + val + "/" + hex_digest)
         response = r.text
         
         return response
