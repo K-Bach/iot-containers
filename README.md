@@ -41,6 +41,8 @@ which gives this output:
 
 The camera, monitor, and door containers are built and started. The camera container is running on socket 172.18.0.2:7001, the monitor container on socket 172.18.0.4:7002, and the door container on socket 172.18.0.3:7003.
 
+## Environment Testing
+
 To verify that the containers can communicate with each other, we used a ping command from one component to another. To get access to the container's shell, we used the following command:
 
 ```bash
