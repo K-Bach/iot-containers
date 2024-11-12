@@ -3,8 +3,16 @@ import hashlib
 
 app = Flask(__name__)
 
-@app.route("/controlDoor/<cmd>", methods=["GET"])
-def control_door(cmd):
+attestations = [hashlib.sha256("camera".encode()).hexdigest(),
+                hashlib.sha256("monitor".encode()).hexdigest(), 
+                hashlib.sha256("door".encode()).hexdigest()]  
+
+@app.route("/<attestation>/controlDoor/<cmd>", methods=["GET"])
+def control_door(attestation, cmd):
+    # Verify attestation
+    if attestation != attestations[1]:
+        return "Invalid attestation"
+    
     if int(cmd) == 1:
         response = unlock()
     else:

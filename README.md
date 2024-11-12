@@ -79,4 +79,34 @@ The other scenarios that we get when calling the camera API ar similar. In the f
 
 In the other, the camera doesn't detect any movement, so it does nothing and returns "No motion detected".
 
+## Detect code injection attacks: attestations
+
+The monitor and door components use attestations to verify that the commands they receive are from trusted sources. The monitor component uses the attestation to verify that the image it receives is from the trusted camera component. The door component uses the attestation to verify that the open/close command it receives is from the trusted monitor component.
+
+Just for this example, the attestation is the hash of the trusted component's name (usually it's the hash of the code).
+
+```python
+attestations = [hashlib.sha256("camera".encode()).hexdigest(),
+                hashlib.sha256("monitor".encode()).hexdigest(), 
+                hashlib.sha256("door".encode()).hexdigest()]    
+```
+
+```python
+# Monitor component
+@app.route("/<attestation>/checkImage/<data>/<hash>", methods=["GET"])
+def checkImage(attestation, data, hash):
+    # Verify attestation
+    if attestation != attestations[0]:
+        return "Invalid attestation"
+```
+
+```python
+# Door component
+@app.route("/<attestation>/controlDoor/<cmd>", methods=["GET"])
+def control_door(attestation, cmd):
+    # Verify attestation
+    if attestation != attestations[1]:
+        return "Invalid attestation"
+```
+
 ---

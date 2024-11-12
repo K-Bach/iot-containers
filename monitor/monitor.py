@@ -6,8 +6,16 @@ import requests
 
 app = Flask(__name__)
 
-@app.route("/checkImage/<data>/<hash>", methods=["GET"])
-def checkImage(data, hash):
+attestations = [hashlib.sha256("camera".encode()).hexdigest(),
+                hashlib.sha256("monitor".encode()).hexdigest(), 
+                hashlib.sha256("door".encode()).hexdigest()]    
+
+@app.route("/<attestation>/checkImage/<data>/<hash>", methods=["GET"])
+def checkImage(attestation, data, hash):
+    # Verify attestation
+    if attestation != attestations[0]:
+        return "Invalid attestation"
+    
     # Verify hash matches data
     hash_object = hashlib.sha384(data.encode())
     calculated_hash = hash_object.hexdigest()
@@ -19,11 +27,11 @@ def checkImage(data, hash):
 
     if not is_family_member:
         # If not family member, notify and lock the door
-        r = requests.get("http://door:7003/controlDoor/0")
+        r = requests.get("http://door:7003/" + attestations[1] + "/controlDoor/0")
         return notify(data) + " " + r.text
     else:
         # If family member detected, unlock the door
-        r = requests.get("http://door:7003/controlDoor/1")
+        r = requests.get("http://door:7003/" + attestations[1] + "/controlDoor/1")
         response = r.text
         
         return "Family member recognized. " + response

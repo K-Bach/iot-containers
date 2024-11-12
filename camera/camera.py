@@ -5,6 +5,10 @@ import requests
 
 app = Flask(__name__)
 
+attestations = [hashlib.sha256("camera".encode()).hexdigest(),
+                hashlib.sha256("monitor".encode()).hexdigest(), 
+                hashlib.sha256("door".encode()).hexdigest()]  
+
 @app.route("/mockMotion", methods=["GET"])
 def mock_motion():
     mocked_images = ["image1", "image2", "image3"]
@@ -17,7 +21,7 @@ def mock_motion():
         hash_object = hashlib.sha384(val.encode())
         hex_digest = hash_object.hexdigest()
         
-        r = requests.get("http://monitor:7002/checkImage/" + val + "/" + hex_digest)
+        r = requests.get("http://monitor:7002/" + attestations[0] + "/checkImage/" + val + "/" + hex_digest)
         response = r.text
         
         return response
